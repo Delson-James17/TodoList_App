@@ -37,7 +37,7 @@ npm run lint
 
 The workflow is `.github/workflows/ci-cd.yml`. It assumes your production branch is `main`; update the trigger branches and deployment condition if yours has another name.
 
-- Pull requests targeting `main`: install dependencies, lint, build, and run all 10 Playwright tests.
+- Pull requests targeting `main`: install dependencies, lint, build, and run all 14 Playwright tests.
 - Pushes to `main`: run the same checks, then deploy to Netlify only if they pass.
 - The Actions tab also supports manually running the workflow. Only runs on `main` deploy.
 - CI tests the production build with Vite preview and deploys that exact build artifact.
@@ -63,3 +63,8 @@ Keep token values in GitHub secrets; do not put them in the YAML file. Pull requ
 `netlify.toml` declares the build command, `dist` publish directory, and Node version. The workflow uses Netlify CLI major version 23 with `--no-build` to upload the already tested files.
 
 References: [Playwright CI](https://playwright.dev/docs/ci), [Netlify CLI authentication](https://docs.netlify.com/api-and-cli-guides/cli-guides/get-started-with-cli/), [Netlify deploy flags](https://cli.netlify.com/commands/deploy/).
+
+## Appearance
+
+Use the header’s Dark mode / Light mode button to switch themes. The app starts with your system preference and remembers your selection in this browser. Playwright covers both themes and preference persistence on desktop and mobile.
+

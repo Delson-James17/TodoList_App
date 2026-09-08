@@ -56,3 +56,27 @@ test('keeps an empty list empty after reload', async ({ page }) => {
   await expect(page.getByRole('progressbar')).toHaveAttribute('value', '0')
 })
 
+
+test('switches themes and remembers the choice without changing tasks', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'light' })
+  await page.reload()
+  await page.getByRole('button', { name: 'Switch to dark mode' }).click()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await expect(page.locator('html')).toHaveCSS('background-color', 'rgb(23, 30, 26)')
+  await page.getByRole('textbox', { name: 'New task' }).fill('A task in dark mode')
+  await page.getByRole('button', { name: 'Add task' }).click()
+  await page.reload()
+  await expect(page.getByRole('button', { name: 'Switch to light mode' })).toBeVisible()
+  await expect(page.getByRole('checkbox', { name: 'A task in dark mode' })).toBeVisible()
+  await page.getByRole('button', { name: 'Switch to light mode' }).click()
+  await page.reload()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await expect(page.locator('html')).toHaveCSS('background-color', 'rgb(247, 248, 244)')
+})
+
+test('uses the system dark preference on first visit', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await page.reload()
+  await expect(page.getByRole('button', { name: 'Switch to light mode' })).toBeVisible()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+})

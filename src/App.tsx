@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 
 type Todo = { id: string; text: string; completed: boolean }
@@ -17,7 +17,24 @@ function readTodos(): Todo[] {
   } catch { /* Start with examples when storage is unavailable or invalid. */ }
   return initialTodos
 }
+function readTheme(): 'light' | 'dark' {
+  try {
+    const saved = localStorage.getItem('little-list-theme')
+    if (saved === 'light' || saved === 'dark') return saved
+  } catch { /* Use the system preference when storage is unavailable. */ }
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
 function App() {
+  const [theme, setTheme] = useState(readTheme)
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+  }, [theme])
+  function toggleTheme() {
+    const next = theme === 'light' ? 'dark' : 'light'
+    setTheme(next)
+    try { localStorage.setItem('little-list-theme', next) }
+    catch { /* Switching themes still works without persistent storage. */ }
+  }
   const [todos, updateTodos] = useState<Todo[]>(readTodos)
   const [text, setText] = useState('')
   const [filter, setFilter] = useState<Filter>('All tasks')
@@ -36,7 +53,13 @@ function App() {
       <header className="site-header">
         <a className="brand" href="./"><span className="brand-icon">✓</span> little list<span className="brand-dot">.</span></a>
         <span className="header-note">A little focus. A little progress.</span>
-        <span className="personal-space"><span /> Your personal space</span>
+        <div className="header-actions">
+          <span className="personal-space"><span /> Your personal space</span>
+          <button className="theme-toggle" type="button" onClick={toggleTheme} aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}>
+            <span aria-hidden="true">{theme === 'light' ? '☾' : '☀'}</span>
+            {theme === 'light' ? 'Dark mode' : 'Light mode'}
+          </button>
+        </div>
       </header>
       <main>
         <div className="intro">
@@ -66,4 +89,5 @@ function App() {
   )
 }
 export default App
+
 
