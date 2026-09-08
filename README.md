@@ -75,6 +75,14 @@ Open `tests/data/todo-cases.xlsx` in Excel. Keep the worksheet name `Todo cases`
 
 Run `npm run test:e2e`. The Excel cases are registered in `tests/todo.spec.ts`, separately for desktop and mobile. Six sample rows bring the default suite to 26 tests.
 
-Open `excel-report/todo-results.xlsx` after the run. It contains a Summary sheet and Test results sheet, including the existing tests and Excel cases. Results include project, case ID, source row, input, expectation, status, attempt, duration, and failure details. Skipped or interrupted tests are labeled separately from failures. The file is overwritten each run; close it in Excel before running again. A command-line `--reporter` override replaces configured reporters, so use the normal command to generate Excel output.
+Open `excel-report/todo-results.xlsx` after the run. It contains:
+
+- **Summary**: execution ID, browser projects, run status, start/finish times, duration, and action-step counts across all attempts.
+- **Steps**: action, status, duration, locator, error, and an embedded screenshot, plus project, test name, and attempt. Screenshots retain their proportions and travel with the workbook. Step duration includes screenshot capture. Action success does not imply the later assertions passed; consult Test results for the overall test status.
+- **Test results**: existing tests and Excel cases, with project, case ID, source row, input, expectation, status, attempt, duration, and failure details. Skipped or interrupted tests are labeled separately from failures.
+
+Use `reportStep(page, action, locator, callback)` from `tests/report-step.ts` around browser actions in new tests to include them in Steps and attach their screenshots to the HTML report. Missing screenshots are labeled in the workbook.
+
+The file is overwritten each run; close it in Excel before running again. A command-line `--reporter` override replaces configured reporters, so use the normal command to generate Excel output.
 
 The HTML report is now generated locally as well: `npx playwright show-report`. In GitHub Actions, download the `playwright-results` artifact; it includes `excel-report/todo-results.xlsx`. Commit the input workbook; generated reports are ignored by Git.
