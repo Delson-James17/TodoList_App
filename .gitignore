@@ -27,3 +27,8 @@ playwright-report/
 test-results/
 
 .netlify/
+
+# Local credentials
+.env
+.env.*
+!.env.example
