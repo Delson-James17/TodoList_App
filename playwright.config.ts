@@ -5,7 +5,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   workers: process.env.CI ? 1 : undefined,
-  reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
+  reporter: [['list'], ['html', { open: 'never' }], ['./tests/reporters/excel-reporter.ts']],
   use: { baseURL: process.env.CI ? 'http://127.0.0.1:4173' : 'http://127.0.0.1:5173', trace: 'retain-on-failure' },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
@@ -19,5 +19,6 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
   },
 })
+
 
 

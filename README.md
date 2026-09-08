@@ -68,3 +68,13 @@ References: [Playwright CI](https://playwright.dev/docs/ci), [Netlify CLI authen
 
 Use the header’s Dark mode / Light mode button to switch themes. The app starts with your system preference and remembers your selection in this browser. Playwright covers both themes and preference persistence on desktop and mobile.
 
+
+## Excel test data and results
+
+Open `tests/data/todo-cases.xlsx` in Excel. Keep the worksheet name `Todo cases` and its headers. Add one row per case with a unique Case ID, Task name (up to 200 characters), and Expected result (`added` or `blocked`). An empty Task name tests blank input. Save and close the workbook before running tests.
+
+Run `npm run test:e2e`. The Excel cases are registered in `tests/todo.spec.ts`, separately for desktop and mobile. Six sample rows bring the default suite to 26 tests.
+
+Open `excel-report/todo-results.xlsx` after the run. It contains a Summary sheet and Test results sheet, including the existing tests and Excel cases. Results include project, case ID, source row, input, expectation, status, attempt, duration, and failure details. Skipped or interrupted tests are labeled separately from failures. The file is overwritten each run; close it in Excel before running again. A command-line `--reporter` override replaces configured reporters, so use the normal command to generate Excel output.
+
+The HTML report is now generated locally as well: `npx playwright show-report`. In GitHub Actions, download the `playwright-results` artifact; it includes `excel-report/todo-results.xlsx`. Commit the input workbook; generated reports are ignored by Git.

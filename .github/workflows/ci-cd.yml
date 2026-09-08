@@ -45,6 +45,7 @@ jobs:
           path: |
             playwright-report/
             test-results/
+            excel-report/
           retention-days: 14
           if-no-files-found: ignore
       - name: Save tested production build
@@ -81,3 +82,4 @@ jobs:
             exit 1
           fi
           npx --yes netlify-cli@23 deploy --dir=dist --prod --no-build
+

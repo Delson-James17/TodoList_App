@@ -1,3 +1,4 @@
+import { readTodoCases } from './excel-data'
 import { test, expect } from '@playwright/test'
 
 test.beforeEach(async ({ page }) => {
@@ -80,3 +81,33 @@ test('uses the system dark preference on first visit', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Switch to light mode' })).toBeVisible()
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
 })
+
+// Each Excel row becomes its own test, with a separate result for each browser project.
+const excelCases = await readTodoCases()
+for (const data of excelCases) {
+  test(`Excel ${data.id}: ${data.expected} (row ${data.row})`, {
+    annotation: [
+      { type: 'case-id', description: data.id },
+      { type: 'excel-row', description: String(data.row) },
+      { type: 'task-name', description: data.task },
+      { type: 'expected-result', description: data.expected },
+    ],
+  }, async ({ page }, testInfo) => {
+    await testInfo.attach('Excel input', { body: JSON.stringify(data, null, 2), contentType: 'application/json' })
+    const countBefore = await page.getByRole('checkbox').count()
+    await page.getByRole('textbox', { name: 'New task' }).fill(data.task)
+    const add = page.getByRole('button', { name: 'Add task' })
+    if (data.expected === 'blocked') {
+      await expect(add).toBeDisabled()
+      await page.getByRole('textbox', { name: 'New task' }).press('Enter')
+      await expect(page.getByRole('checkbox')).toHaveCount(countBefore)
+    } else {
+      await expect(add).toBeEnabled()
+      await add.click()
+      await expect(page.getByRole('checkbox')).toHaveCount(countBefore + 1)
+      await expect(page.getByRole('checkbox', { name: data.task.trim(), exact: true }).last()).toBeVisible()
+      await expect(page.getByRole('textbox', { name: 'New task' })).toBeEmpty()
+    }
+  })
+}
+
