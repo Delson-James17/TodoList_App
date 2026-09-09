@@ -54,7 +54,7 @@ function App() {
         <a className="brand" href="./"><span className="brand-icon">✓</span> little list<span className="brand-dot">.</span></a>
         <span className="header-note">A little focus. A little progress.</span>
         <div className="header-actions">
-          <span className="personal-space"><span /> Your personal space</span>
+          <span className="personal-space"><span /> Personal space</span>
           <button className="theme-toggle" type="button" onClick={toggleTheme} aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}>
             <span aria-hidden="true">{theme === 'light' ? '☾' : '☀'}</span>
             {theme === 'light' ? 'Dark mode' : 'Light mode'}
